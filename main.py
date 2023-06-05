@@ -39,46 +39,45 @@ for iso in isoList:
         helpers.mkdirifnot(extractDllDir) # Create isos\extracted\ISONAME\dll
         helpers.mkdirifnot(jsonDir) # Create isos\extracted\ISONAME\dll
         
-        # Extract the ISO's contents to 
+        # Extract the ISO's contents
+        print("Extracting ISO files...")
         iso_extract.extract_iso("auto", "/", extractIsoDir, f"{isoFolder}\\{iso}")
         
-        #fileMap = open(f"{jsonDir}\\filemap.json", "w") # iso\extracted\ISONAME\filemap.json
-
+        print("Extracting CAB files...")
         for root, subdirs, files, in os.walk(extractIsoDir):
             for _file in files:
                 lowerFile = _file.lower()
                 fullPath = f"{root}\\{_file}" # extractIsoDir\DLLNAME.dll
-                jsonFullPath = fullPath.strip(extractIsoDir) # (SUB-DIRECTORIES)\DLLNAME.dll
+                isDL_ = lowerFile.endswith(".dl_")                
                 
-                if lowerFile.endswith(".dll"):
-                    helpers.SaveJSONS(jsonFullPath, jsonDir, lowerFile, fullPath)
-                    shutil.copy(fullPath, extractDllDir)
-                    
-                elif lowerFile.endswith(".dl_"):
-                    baseName = f"{lowerFile.strip('.dl_')}.dll"
+                if isDL_:
                     cwdPath = os.path.abspath(fullPath)
-                    subprocess.Popen(f"7z e {cwdPath}", cwd=os.path.dirname(cwdPath)).wait()
-                    
-                    _DLLfile = f"{extractDllDir}\\{baseName}"
-                    
-                    if _DLLfile.endswith(".dll"):
-                        helpers.SaveJSONS(jsonFullPath, jsonDir, baseName, _DLLfile)
-                        if os.path.exists(f"{extractDllDir}\\{_DLLfile}"):
-                            continue
-                        shutil.copy(fullPath, extractDllDir)
-                    
-                    while not os.path.exists(_DLLfile):
-                        print(_DLLfile)
-                        continue
+                    subprocess.Popen(f"7z x {cwdPath} -y", cwd=os.path.dirname(cwdPath)).wait()   
         
+        # Gather necessary information from DLLs
+        print("Collecting information...")
+        for root, subdirs, files, in os.walk(extractIsoDir):
+            for _file in files:
+                lowerFile = _file.lower()
+                fullPath = f"{root}\\{_file}" # extractIsoDir\(SUB-DIRECTORIES)\DLLNAME.dll
+                jsonFullPath = fullPath.strip(extractIsoDir) # (SUB-DIRECTORIES)\DLLNAME.dll
+                isDLL = lowerFile.endswith(".dll")
+                
+                if isDLL:
+                    if not os.path.exists(f"{extractDllDir}\\{lowerFile}"):
+                        shutil.move(os.path.abspath(fullPath), extractDllDir)
+                        helpers.saveJSONS(jsonFullPath, jsonDir, lowerFile, f"{extractDllDir}\\{lowerFile}")
+                     
         # all done, cleanup
-        #fileMap.write(json.dumps(fileMapDict))
+        print(f"Finished extracting {iso}!")
         shutil.rmtree(extractIsoDir)
         
     except Exception as e:
         with open("errors.txt", "w") as eLog:
             tb = traceback.format_exc()
             print("ERROR HAPPENED ABORTING MISSION!")
+            print("Here's the error too:")
+            print(tb)
             eLog.write(tb)
             shutil.rmtree(rootDir)
             exit()
