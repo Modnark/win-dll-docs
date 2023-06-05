@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "C:\Users\User\Documents\GitHub\win-dll-docs\main.py", line 68, in <module>
-    shutil.move(os.path.abspath(fullPath), extractDllDir)
-  File "C:\Users\User\AppData\Local\Programs\Python\Python311\Lib\shutil.py", line 823, in move
-    raise Error("Destination path '%s' already exists" % real_dst)
-shutil.Error: Destination path 'isos\extracted\winxpsp3\dll\GDIPLUS.DLL' already exists
