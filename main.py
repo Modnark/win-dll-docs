@@ -34,10 +34,12 @@ for iso in isoList:
         extractIsoDir = f"{rootDir}\\iso" # isos\extracted\ISONAME\iso
         extractDllDir = f"{rootDir}\\dll" # isos\extracted\ISONAME\dll
         jsonDir = f"{rootDir}\\json" # isos\extracted\ISONAME\dll
+        resDir = f"{rootDir}\\resources" # isos\extracted\ISONAME\resources
         helpers.mkdirifnot(rootDir) # Create isos\extracted\ISONAME\
         helpers.mkdirifnot(extractIsoDir) # Create isos\extracted\ISONAME\iso
         helpers.mkdirifnot(extractDllDir) # Create isos\extracted\ISONAME\dll
         helpers.mkdirifnot(jsonDir) # Create isos\extracted\ISONAME\dll
+        helpers.mkdirifnot(resDir) # Create isos\extracted\ISONAME\resources
         
         # Extract the ISO's contents
         print("Extracting ISO files...")
@@ -66,7 +68,7 @@ for iso in isoList:
                 if isDLL:
                     if not os.path.exists(f"{extractDllDir}\\{lowerFile}"):
                         shutil.move(os.path.abspath(fullPath), extractDllDir)
-                        helpers.saveJSONS(jsonFullPath, jsonDir, lowerFile, f"{extractDllDir}\\{lowerFile}")
+                        helpers.saveJSONS(jsonFullPath, jsonDir, resDir, lowerFile, f"{extractDllDir}\\{lowerFile}")
                      
         # all done, cleanup
         print(f"Finished extracting {iso}!")
