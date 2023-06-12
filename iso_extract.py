@@ -16,6 +16,8 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
+# Modified by Modnark
+
 from __future__ import print_function
 
 import argparse
@@ -69,7 +71,7 @@ def extract_iso(pathType, startPath, extractTo, isoFile):
         relname = ident_to_here[len(startPath):]
         if relname and relname[0] == '/':
             relname = relname[1:]
-        print(relname)
+        #print(relname)
         if dir_record.is_dir():
             if relname != '':
                 os.makedirs(os.path.join(extractTo, relname))

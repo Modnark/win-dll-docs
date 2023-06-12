@@ -51,10 +51,7 @@ def getImportsAndExports(filename):
 def saveJSONS(jsonFullPath, jsonDir, resDir, baseName, fullPath):
     # Gather info
     currentPETime = getPETime(fullPath)
-    imports, exports = getImportsAndExports(fullPath)
-    
-    if len(resourceInfo) != 0:
-        mkdirifnot(f"{resDir}\\{baseName}")
+    imports, exports = getImportsAndExports(fullPath)  
     
     # Construct info structure
     infoJson = {}
